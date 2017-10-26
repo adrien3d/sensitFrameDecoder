@@ -16,16 +16,16 @@ func analyzeBytes(data string) {
 	byte4 := data[24:32]
 
 	//Byte 1
-	mode, _ := strconv.ParseInt(data[5:8], 2, 16)
-	timeframe, _ := strconv.ParseInt(data[3:5], 2, 16)
-	eventType, _ := strconv.ParseInt(data[1:3], 2, 16)
+	mode, _ := strconv.ParseInt(data[5:8], 2, 8)
+	timeframe, _ := strconv.ParseInt(data[3:5], 2, 8)
+	eventType, _ := strconv.ParseInt(data[1:3], 2, 8)
 	batteryMsb := data[0:1]
 
 	//Byte 2
 	temperatureMsb := data[8:12]
 	batteryLsb := data[12:16]
 	battData := []string{batteryMsb, batteryLsb}
-	battery, _ := strconv.ParseInt(strings.Join(battData, ""), 2, 16)
+	battery, _ := strconv.ParseInt(strings.Join(battData, ""), 2, 8)
 	batVal := float32(battery) * 0.05 * 2.7
 
 	//Byte 3
@@ -47,11 +47,18 @@ func analyzeBytes(data string) {
 	}
 
 	modeStr := ""
+	swRev := ""
+	humidity := 0.0
 	switch mode {
 	case 0:
 		modeStr = "Button"
+		majorSwRev, _ := strconv.ParseInt(data[24:28], 2, 8)
+		minorSwRev, _ := strconv.ParseInt(data[28:32], 2, 8)
+		swRev = fmt.Sprintf("%d.%d", majorSwRev, minorSwRev)
 	case 1:
 		modeStr = "Temperature + Humidity"
+		humi, _ := strconv.ParseInt(data[24:32], 2, 16)
+		humidity = float64(humi) * 0.5
 	case 2:
 		modeStr = "Light"
 	case 3:
@@ -96,6 +103,11 @@ func analyzeBytes(data string) {
 	fmt.Println("Raw data :", byte1, byte2, byte3, byte4)
 	fmt.Println("Mode", mode, ":", modeStr, "\t\t", "Event type", eventType, ":", typeStr, "\t\t", "Timeframe", timeframe, ":", timeStr)
 	fmt.Println("Battery :", batVal, "V\t\t", "Temperature :", tempVal, "°C")
+	if mode == 0 {
+		fmt.Println("v" + swRev)
+	} else if mode == 1 {
+		fmt.Println(humidity, "% RH")
+	}
 	if reedSwitch {
 		fmt.Println("Reed switch on")
 	}
@@ -112,6 +124,6 @@ func formatData(data string) {
 }
 
 func main() {
-	frameBits := "e86e1a21"
+	frameBits := "e9622190"
 	formatData(frameBits)
 }
