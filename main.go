@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -107,7 +108,7 @@ func analyzeBytes(data string) {
 	}
 
 	//fmt.Println(data)
-	fmt.Println("________________________________________________________________________________________")
+	fmt.Println("_____________________________________________________________________________________________________________________")
 	fmt.Println("Raw data :", byte1, byte2, byte3, byte4)
 	fmt.Println("Mode", mode, ":", modeStr, "\t\t", "Event type", eventType, ":", typeStr, "\t\t", "Timeframe", timeframe, ":", timeStr)
 	fmt.Println("Battery :", batVal, "V\t\t")
@@ -142,11 +143,7 @@ func formatData(data string) {
 }
 
 func main() {
-	frameBits := "e86e1a21"
-	formatData(frameBits)
-	formatData("896e1293")
-	formatData("ca6ec401")
-	formatData("eb6e0000")
-	formatData("ec6e1700")
-	formatData("ed6e1900")
+	for i := 1; i <= len(os.Args[1:]); i++ {
+		formatData(os.Args[i])
+	}
 }
