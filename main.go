@@ -67,7 +67,7 @@ func analyzeBytes(data string) {
 		light = float32(lightVal) * 0.01
 		if lightMulti == 1 {
 			light = light * 8
-			}
+		}
 	case 3:
 		modeStr = "Door"
 	case 4:
@@ -107,6 +107,7 @@ func analyzeBytes(data string) {
 	}
 
 	//fmt.Println(data)
+	fmt.Println("________________________________________________________________________________________")
 	fmt.Println("Raw data :", byte1, byte2, byte3, byte4)
 	fmt.Println("Mode", mode, ":", modeStr, "\t\t", "Event type", eventType, ":", typeStr, "\t\t", "Timeframe", timeframe, ":", timeStr)
 	fmt.Println("Battery :", batVal, "V\t\t")
@@ -119,7 +120,9 @@ func analyzeBytes(data string) {
 		fmt.Println("Temperature :", tempVal, "°C")
 	case 2:
 		fmt.Println(light, "lux")
-	case 3,4,5:
+		alerts, _ := strconv.ParseInt(data[24:32], 2, 16)
+		fmt.Println("Number of alerts :", alerts)
+	case 3, 4, 5:
 		alerts, _ := strconv.ParseInt(data[24:32], 2, 16)
 		fmt.Println("Number of alerts :", alerts)
 	}
@@ -139,6 +142,11 @@ func formatData(data string) {
 }
 
 func main() {
-	frameBits := "ec6e1700"
+	frameBits := "e86e1a21"
 	formatData(frameBits)
+	formatData("896e1293")
+	formatData("ca6ec401")
+	formatData("eb6e0000")
+	formatData("ec6e1700")
+	formatData("ed6e1900")
 }
