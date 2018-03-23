@@ -9,8 +9,6 @@ import (
 )
 
 func analyzeBytes(data string) {
-	// TODO : Fix shift when battery MSB=0
-	// TODO : Handle modes 2, 3, 4 & 5
 	byte1 := data[0:8]
 	byte2 := data[8:16]
 	byte3 := data[16:24]
@@ -134,12 +132,18 @@ func analyzeBytes(data string) {
 
 func formatData(data string) {
 	//decoded, err := hex.DecodeString(data)
+	fmt.Println(len(data))
 	parsed, err := strconv.ParseUint(data, 16, 32)
 	if err != nil {
 		log.Fatal(err)
 	}
 	pars := fmt.Sprintf("%08b", parsed)
-	analyzeBytes(pars)
+	fmt.Println(len(pars))
+
+	if (len(pars) == 25 ) {
+		fmt.Println("Low battery")
+	}
+	//analyzeBytes(pars)
 }
 
 func main() {
